@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Path, Depends, HTTPException
 from typing import Optional, List, Dict
-from models import Client, UpdateClient, UserSchema, UserLoginSchema
+from models import Client, UpdateClient, UserSchema, UserLoginSchema, Project, UpdateProject
 # from app.auth.jwt_handler import signJWT, decodeJWT
 from fastapi.security import OAuth2PasswordBearer
 from uuid import UUID, uuid4
@@ -9,6 +9,7 @@ from uuid import UUID, uuid4
 app = FastAPI()
 
 clients_db: Dict[int, Client] = {}
+projects_db: Dict[int, Project] = {}
 
 users_db = {}
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
@@ -68,3 +69,36 @@ def delete_client(id: int):
         raise HTTPException(status_code=404, detail="Client not found")
     del clients_db[id]
     return {"message": "Client deleted"}
+
+
+@app.post("/api/v1/projects", tags=["Projects"])
+def create_project(project: Project):
+    project_id = len(projects_db) + 1
+    projects_db[project_id] = project
+    return {"id": project_id, "project": project}
+
+@app.patch("/api/v1/projects/{id}", tags=["Projects"])
+def update_project(id: int, project: UpdateProject):
+    if id not in projects_db:
+        raise HTTPException(status_code=404, detail="Project not found")
+    for key, value in project.dict(exclude_unset=True).items():
+        setattr(projects_db[id], key, value)
+    return projects_db[id]
+
+@app.get("/api/v1/projects", tags=["Projects"])
+def list_projects():
+    return projects_db
+
+@app.get("/api/v1/projects/{id}", tags=["Projects"])
+def get_project(id: int):
+    if id not in projects_db:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return projects_db[id]
+
+@app.delete("/api/v1/projects/{id}", tags=["Projects"])
+def delete_project(id: int):
+    if id not in projects_db:
+        raise HTTPException(status_code=404, detail="Project not found")
+    del projects_db[id]
+    return {"message": "Project deleted"}
+

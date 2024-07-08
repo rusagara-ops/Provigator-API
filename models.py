@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, EmailStr
-from typing import Optional
+from typing import Optional, Literal
 from uuid import UUID, uuid4
 
 class Client(BaseModel):
@@ -36,3 +36,28 @@ class UserLoginSchema(BaseModel):
                 "password": "12345678"
             }
         }
+
+class Project(BaseModel):
+    id : Optional [UUID] =uuid4()
+    pm_names: str
+    name: str
+    description: str
+    thumbnail: str
+    client: str
+    type: Literal["App", "Web", "Dashboard"]
+    url: str
+    bug_report_url: str
+
+
+class UpdateProject(BaseModel):
+    pm_names: Optional[str] = None
+    name: Optional[str] = None
+    description: Optional[str] = None
+    thumbnail: Optional[str] = None
+    client: Optional[str] = None
+    type: Optional[Literal["App", "Web", "Dashboard"]] = None
+    url: Optional[str] = None
+    bug_report_url: Optional[str] = None
+
+
+
