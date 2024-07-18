@@ -1,7 +1,5 @@
 from pydantic import BaseModel, Field, EmailStr
 from typing import Optional, Literal
-from uuid import UUID, uuid4
-
 
 class Client(BaseModel):
     name: str
@@ -38,7 +36,6 @@ class UserLoginSchema(BaseModel):
         }
 
 class Project(BaseModel):
-    id : Optional [UUID] =uuid4()
     pm_names: str
     name: str
     description: str
@@ -47,7 +44,6 @@ class Project(BaseModel):
     type: Literal["App", "Web", "Dashboard"]
     url: str
     bug_report_url: str
-
 
 class UpdateProject(BaseModel):
     pm_names: Optional[str] = None
@@ -58,6 +54,3 @@ class UpdateProject(BaseModel):
     type: Optional[Literal["App", "Web", "Dashboard"]] = None
     url: Optional[str] = None
     bug_report_url: Optional[str] = None
-
-
-
