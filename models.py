@@ -1,9 +1,7 @@
 from pydantic import BaseModel, Field, EmailStr
-from typing import Optional
-from uuid import UUID, uuid4
+from typing import Optional, Literal
 
 class Client(BaseModel):
-    id: Optional[UUID] = uuid4()
     name: str
     country: str
 
@@ -17,7 +15,7 @@ class UserSchema(BaseModel):
     password: str = Field(default=None)
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "fullname": "John Doe",
                 "email": "john@awesomity.rw",
@@ -30,9 +28,29 @@ class UserLoginSchema(BaseModel):
     password: str = Field(default=None)
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "email": "john@awesomity.rw",
                 "password": "12345678"
             }
         }
+
+class Project(BaseModel):
+    pm_names: str
+    name: str
+    description: str
+    thumbnail: str
+    client: str
+    type: Literal["App", "Web", "Dashboard"]
+    url: str
+    bug_report_url: str
+
+class UpdateProject(BaseModel):
+    pm_names: Optional[str] = None
+    name: Optional[str] = None
+    description: Optional[str] = None
+    thumbnail: Optional[str] = None
+    client: Optional[str] = None
+    type: Optional[Literal["App", "Web", "Dashboard"]] = None
+    url: Optional[str] = None
+    bug_report_url: Optional[str] = None
